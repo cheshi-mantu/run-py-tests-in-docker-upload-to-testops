@@ -29,9 +29,9 @@ jobs:
       - name: install and configure allurectl
         uses: allure-framework/setup-allurectl@v1.0.0
         with:
-          allure-endpoint: https://testing.testops.cloud
+          allure-endpoint: ${{ vars.ALLURE_ENDPOINT }}
           allure-token: ${{ secrets.ALLURE_TOKEN }}
-          allure-project-id: 276
+          allure-project-id: ${{ vars.ALLURE_PROJECT_ID }}
       - name: get context for allurectl
         id: allure-context
         run: echo "ci-env=$(allurectl ci env --encode)" >> $GITHUB_OUTPUT
@@ -41,4 +41,5 @@ jobs:
           -e ALLURE_CI_ENV="${{ steps.allure-context.outputs.ci-env }}" \
           -e TEST_ENDPOINT="${{ github.event.inputs.TEST_ENDPOINT }}" \
           -e TEST_BROWSER="${{ github.event.inputs.TEST_BROWSER }}" \
+          -e ALLURE_LAUNCH_NAME="pytest tests from docker container" \
           ghcr.io/cheshi-mantu/py-allurectl:latest
