@@ -40,8 +40,5 @@ jobs:
           docker run --rm \
           -e ALLURE_CI_ENV="${{ steps.allure-context.outputs.ci-env }}" \
           -e TEST_ENDPOINT="${{ github.event.inputs.TEST_ENDPOINT }}" \
-          -e TEST_BROWSER="${{ github.event.inputs.TEST_BROWSER }}"
+          -e TEST_BROWSER="${{ github.event.inputs.TEST_BROWSER }}" \
           ghcr.io/cheshi-mantu/py-allurectl:latest
-          # -e ALLURE_USERNAME="${{ github.event.inputs.ALLURE_USERNAME }}" \
-          # -e ALLURE_JOB_RUN_ID="${{ github.event.inputs.ALLURE_JOB_RUN_ID }}" \
-          # -e ALLURE_TOKEN="${{ secrets.ALLURE_TOKEN }}" \
