@@ -1,0 +1,47 @@
+name: run tests in docker container
+
+on:
+  workflow_dispatch:
+    inputs:
+      TEST_ENDPOINT:
+        description: "System under test endpoint"
+        required: false
+        default: https://dev.github.com
+      TEST_BROWSER:
+        description: "Browser for tests"
+        required: false
+        default: chrome
+      ALLURE_JOB_RUN_ID:
+        description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
+        required: false
+      ALLURE_USERNAME:
+        description: "ALLURE_USERNAME service parameter. Leave blank"
+        required: false
+
+env:
+  ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+  ALLURE_USERNAME: ${{ github.event.inputs.ALLURE_USERNAME }}
+
+jobs:
+  all-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install and configure allurectl
+        uses: allure-framework/setup-allurectl@v1.0.0
+        with:
+          allure-endpoint: https://testing.testops.cloud
+          allure-token: ${{ secrets.ALLURE_TOKEN }}
+          allure-project-id: 276
+      - name: get context for allurectl
+        id: allure-context
+        run: echo "ci-env=$(allurectl ci env --encode)" >> $GITHUB_OUTPUT
+      - name: run tests in docker container
+        run: |
+          docker run --rm \
+          -e ALLURE_CI_ENV="${{ steps.allure-context.outputs.ci-env }}" \
+          -e TEST_ENDPOINT="${{ github.event.inputs.TEST_ENDPOINT }}" \
+          -e TEST_BROWSER="${{ github.event.inputs.TEST_BROWSER }}"
+          ghcr.io/cheshi-mantu/py-allurectl:latest
+          # -e ALLURE_USERNAME="${{ github.event.inputs.ALLURE_USERNAME }}" \
+          # -e ALLURE_JOB_RUN_ID="${{ github.event.inputs.ALLURE_JOB_RUN_ID }}" \
+          # -e ALLURE_TOKEN="${{ secrets.ALLURE_TOKEN }}" \
