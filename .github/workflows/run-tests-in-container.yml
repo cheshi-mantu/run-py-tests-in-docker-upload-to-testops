@@ -6,7 +6,7 @@ on:
       TEST_ENDPOINT:
         description: "System under test endpoint"
         required: false
-        default: https://dev.github.com
+        default: https://just.read.the.instructions
       TEST_BROWSER:
         description: "Browser for tests"
         required: false
